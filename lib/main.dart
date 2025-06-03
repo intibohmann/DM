@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-
 void main() => runApp(MyApp());
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -14,17 +12,35 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Tela Inicial'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.info),
+            onPressed: () {
+              showAboutDialog(
+                context: context,
+                applicationName: 'Exemplo de Widgets',
+                applicationVersion: '1.0.0',
+                children: [
+                  Text('Este é um exemplo de aplicativo Flutter com formulários.'),
+                ],
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: ElevatedButton(
-          child: Text('Ir para Cadastro de Animais'),
+          child: Text('Ir para o Cadastro de animais'),
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            textStyle: TextStyle(fontSize: 18),
+          ),
           onPressed: () {
             Navigator.push(
               context,
@@ -37,12 +53,10 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-
 class FormScreen extends StatefulWidget {
   @override
   _FormScreenState createState() => _FormScreenState();
 }
-
 
 class _FormScreenState extends State<FormScreen> {
   final _formKey = GlobalKey<FormState>();
@@ -50,12 +64,11 @@ class _FormScreenState extends State<FormScreen> {
   bool _aceitaTermos = false;
   String _genero = 'Masculino';
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Formulário'),
+        title: Text('Formulároio de Cadastro de Animais'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -121,6 +134,15 @@ class _FormScreenState extends State<FormScreen> {
                   onPressed: () {
                     if (_formKey.currentState!.validate() && _aceitaTermos) {
                       _formKey.currentState!.save();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ResultScreen(
+                            nome: _nome,
+                            genero: _genero,
+                          ),
+                        ),
+                      );
                     }
                   },
                 ),
@@ -133,4 +155,34 @@ class _FormScreenState extends State<FormScreen> {
   }
 }
 
+class ResultScreen extends StatelessWidget {
+  final String nome;
+  final String genero;
 
+  ResultScreen({required this.nome, required this.genero});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Resultado'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Nome: $nome'),
+            Text('Gênero: $genero'),
+            SizedBox(height: 20),
+            ElevatedButton(
+              child: Text('Voltar'),
+              onPressed: () {
+                Navigator.popUntil(context, (route) => route.isFirst);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
